@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ROA Forum</string>
+
+    <string name="click_me">Click Me!</string>
+    <string name="user_name">User Name</string>
+    <string name="password">password</string>
+    <string name="login">Login</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="login_success">Login success</string>
+    <string name="login_failed">Login failed</string>
+
+    <string name="error">Error</string>
+    <string name="error_unknown">Unknown Error</string>
+    <string name="error_connection_refused">Connection Refused</string>
+    <string name="error_response_null">Response is null</string>
+
+    <string name="welcome_user">Welcome, {{userName}}.</string>
+</resources>

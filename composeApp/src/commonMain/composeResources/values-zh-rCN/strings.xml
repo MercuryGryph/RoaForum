@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ROA 论坛</string>
+
+    <string name="click_me">点击我！</string>
+    <string name="user_name">用户名</string>
+    <string name="password">密码</string>
+    <string name="login">登录</string>
+    <string name="show_password">显示密码</string>
+    <string name="hide_password">隐藏密码</string>
+    <string name="login_success">登录成功</string>
+    <string name="login_failed">登录失败</string>
+
+    <string name="error">错误</string>
+    <string name="error_unknown">未知错误</string>
+    <string name="error_connection_refused">连接失败</string>
+    <string name="error_response_null">回复消息为空</string>
+
+    <string name="welcome_user">欢迎，{{userName}}。</string>
+</resources>
