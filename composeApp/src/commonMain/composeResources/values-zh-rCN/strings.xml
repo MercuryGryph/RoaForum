@@ -11,6 +11,8 @@
     <string name="login_success">登录成功</string>
     <string name="login_failed">登录失败</string>
 
+    <string name="register">注册</string>
+
     <string name="error">错误</string>
     <string name="error_unknown">未知错误</string>
     <string name="error_connection_refused">连接失败</string>

@@ -1,11 +1,25 @@
+package ui
+
+import HttpService
+import LoadingState
+import SERVER_IP
+import SERVER_PORT
+import State
+import StringLegalState
+import UserData
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
@@ -35,9 +50,11 @@ import roaforum.composeapp.generated.resources.login
 import roaforum.composeapp.generated.resources.login_failed
 import roaforum.composeapp.generated.resources.login_success
 import roaforum.composeapp.generated.resources.password
+import roaforum.composeapp.generated.resources.register
 import roaforum.composeapp.generated.resources.show_password
 import roaforum.composeapp.generated.resources.user_name
 import roaforum.composeapp.generated.resources.welcome_user
+import sha256
 import java.net.ConnectException
 
 @OptIn(ExperimentalResourceApi::class)
@@ -53,8 +70,14 @@ fun login(
         by remember { mutableStateOf("") }
     var password
         by remember { mutableStateOf("") }
+
     var stateLoadingLogin: LoadingState
         by remember { mutableStateOf(LoadingState.Waiting) }
+    var stateUserNameLegal
+        by remember { mutableStateOf(StringLegalState.Legal) }
+    var statePasswordLegal
+        by remember { mutableStateOf(StringLegalState.Legal) }
+
     var userData
         by remember { mutableStateOf(UserData()) }
 
@@ -65,14 +88,19 @@ fun login(
                 HttpService.setHttpClientWithUserLogin(
                     userName = userName,
                     password = password,
-                    targetUrl = "http://${SERVER_IP}:${SERVER_PORT}/login"
+                    targetHost = SERVER_IP
                 )
                 val response = HttpService.get("http://${SERVER_IP}:${SERVER_PORT}/user")
                 when (response.status) {
                     HttpStatusCode.OK -> {
                         val responseText = response.bodyAsText()
-                        userData = Json.decodeFromString<UserData>(responseText)
-                        stateLoadingLogin = LoadingState.Loaded(State.Succeed)
+                        val data = Json.decodeFromString<UserData>(responseText)
+                        if (data.userName == userName) {
+                            userData = data
+                            stateLoadingLogin = LoadingState.Loaded(State.Succeed)
+                        } else {
+                            stateLoadingLogin = LoadingState.Loaded(State.Failed(null))
+                        }
                     }
                     HttpStatusCode.Unauthorized -> {
                         stateLoadingLogin = LoadingState.Loaded(
@@ -81,12 +109,15 @@ fun login(
                     }
                 }
             } catch (e: ConnectException) {
-                stateLoadingLogin = LoadingState.Loaded(when (e.message) {
-                    "Connection refused" ->
-                        State.ErrorConnectionRefused
-                    else ->
-                        State.ErrorUnknown(e.message ?: "")
-                })
+                stateLoadingLogin = LoadingState.Loaded(
+                    when (e.message) {
+                        "Connection refused" ->
+                            State.ErrorConnectionRefused
+
+                        else ->
+                            State.ErrorUnknown(e.message ?: "")
+                    }
+                )
             } catch (e: Exception) {
                 stateLoadingLogin = LoadingState.Loaded(
                     State.ErrorUnknown(e.message ?: "")
@@ -100,7 +131,13 @@ fun login(
         verticalArrangement = Arrangement.Center,
         modifier = modifier
     ) {
-        Text(text = stringResource(Res.string.login))
+        Text(
+            text = stringResource(Res.string.login),
+            fontSize = MaterialTheme.typography.h5.fontSize,
+            fontStyle = MaterialTheme.typography.h5.fontStyle,
+            fontWeight = MaterialTheme.typography.h5.fontWeight,
+            color = MaterialTheme.typography.h5.color
+        )
 
         OutlinedTextField(
             label = {
@@ -119,6 +156,12 @@ fun login(
                 )
             },
             singleLine = true,
+            colors = when (stateUserNameLegal) {
+                StringLegalState.Legal, StringLegalState.Unchecked, StringLegalState.Empty ->
+                    TextFieldDefaults.textFieldColors()
+                else ->
+                    TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.error)
+            },
             modifier = Modifier
         )
 
@@ -163,6 +206,12 @@ fun login(
                 }
             },
             singleLine =  true,
+            colors = when (statePasswordLegal) {
+                StringLegalState.Legal, StringLegalState.Unchecked, StringLegalState.Empty ->
+                    TextFieldDefaults.textFieldColors()
+                else ->
+                    TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.error)
+            },
             visualTransformation = if (doPasswordHidden) {
                 PasswordVisualTransformation()
             } else {
@@ -171,16 +220,41 @@ fun login(
             modifier = Modifier
         )
 
-        Button(
-            onClick = {
-                password = passwordLiteral.sha256()
-                loginUser()
-            },
-            enabled = stateLoadingLogin != LoadingState.Loading
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(0.dp, 16.dp, 0.dp, 0.dp)
         ) {
-            Text(
-                text = stringResource(Res.string.login)
-            )
+            Button(
+                onClick = {
+                    TODO()
+                },
+                enabled = stateLoadingLogin == LoadingState.Waiting,
+                modifier = Modifier
+                    .padding(16.dp, 0.dp)
+            ) {
+                Text(stringResource(Res.string.register))
+            }
+
+            Button(
+                onClick = {
+                    password = passwordLiteral.sha256()
+                    loginUser()
+                },
+                enabled = (
+                    stateLoadingLogin == LoadingState.Waiting
+                    && stateUserNameLegal == StringLegalState.Legal
+                    && statePasswordLegal == StringLegalState.Legal
+                ),
+                modifier = Modifier
+                    .padding(16.dp, 0.dp)
+            ) {
+                Text(
+                    text = stringResource(Res.string.login)
+                )
+            }
         }
 
         if (stateLoadingLogin is LoadingState.Loaded) {

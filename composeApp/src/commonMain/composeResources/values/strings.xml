@@ -10,6 +10,8 @@
     <string name="login_success">Login success</string>
     <string name="login_failed">Login failed</string>
 
+    <string name="register">Register</string>
+
     <string name="error">Error</string>
     <string name="error_unknown">Unknown Error</string>
     <string name="error_connection_refused">Connection Refused</string>

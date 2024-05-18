@@ -42,6 +42,8 @@ kotlin {
             implementation(projects.shared)
             implementation(libs.ktor.client.core)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.navigation.compose)
+//            implementation(libs.androidx.navigation.compose)
 //            implementation(libs.androidx.material3)
         }
         desktopMain.dependencies {

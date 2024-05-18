@@ -4,15 +4,22 @@ import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
 import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
+import io.ktor.http.headers
 
-expect fun getHttpClient(): HttpClient
+expect fun createHttpClient(): HttpClient
 
 object HttpService {
     private var httpClient: HttpClient? = null
 
-    suspend fun setHttpClientWithUserLogin(userName: String, password: String, targetUrl: String): String {
-        httpClient = getHttpClient().config {
+    fun getHttpClient(): HttpClient {
+        if (httpClient == null) {
+            httpClient = createHttpClient()
+        }
+        return httpClient as HttpClient
+    }
+
+    fun setHttpClientWithUserLogin(userName: String, password: String, targetHost: String) {
+        httpClient = createHttpClient().config {
             install(Auth) {
                 basic {
                     credentials {
@@ -22,16 +29,44 @@ object HttpService {
                         )
                     }
                     realm = "user"
+                    sendWithoutRequest { request ->
+                        request.url.host == targetHost
+                    }
                 }
             }
         }
-        val response = httpClient!!.get(targetUrl)
-        return response.bodyAsText()
     }
 
-    suspend fun get(targetUrl: String): HttpResponse {
-        if (httpClient == null) httpClient = getHttpClient()
-        return httpClient!!.get(targetUrl)
+    fun updateHttpClientWithLogin(userName: String, password: String, targetHost: String, targetRealm: String) {
+        httpClient = getHttpClient().config {
+            install(Auth) {
+                basic {
+                    credentials {
+                        BasicAuthCredentials(
+                            username = userName,
+                            password = password
+                        )
+                    }
+                    realm = targetRealm
+                    sendWithoutRequest { request ->
+                        request.url.host == targetHost
+                    }
+                }
+            }
+        }
+    }
+
+    suspend fun get(
+        targetUrl: String,
+        targetHeaders: Map<String, String> = mapOf()
+    ): HttpResponse {
+        return getHttpClient().get(targetUrl) {
+            headers {
+                targetHeaders.forEach { (head, str) ->
+                    append(head, str)
+                }
+            }
+        }
     }
 
 }

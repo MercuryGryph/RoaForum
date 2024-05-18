@@ -11,3 +11,19 @@ sealed interface LoadingState {
     data object Loading: LoadingState
     data class Loaded(val state: State): LoadingState
 }
+
+enum class StringLegalState {
+    Unchecked,
+    Legal,
+    Illegal,
+    Empty,
+    Blank,
+    WrongLength,
+    TooShort,
+    TooLong,
+    StartWithBlankChar,
+    EndWithBlankChar,
+    HasIllegalSubString,
+    HasIllegalChar,
+    HasIllegalBlankChar
+}
