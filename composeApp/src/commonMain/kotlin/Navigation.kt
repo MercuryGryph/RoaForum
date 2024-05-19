@@ -24,7 +24,7 @@ fun Navigation(
 ) {
     val isDarkMode: Boolean = isSystemInDarkTheme()
 
-    var appTheme by remember { mutableStateOf(
+    var theme by remember { mutableStateOf(
         if (isDarkMode) {
             RoaForumThemes.DARK
         } else {
@@ -33,16 +33,17 @@ fun Navigation(
     ) }
 
     val appContainer: AppContainer by remember { mutableStateOf(
-        DefaultAppContainer(
-            isSystemInDarkTheme = isDarkMode,
-            onChangeAppTheme = {
-                appTheme = it
-            }
-        )
+        DefaultAppContainer()
     ) }
 
+    appContainer.isSystemInDarkTheme = isDarkMode
+
+    appContainer.onChangeAppTheme = {
+        theme = it
+    }
+
     RoaForumTheme(
-        theme = appTheme
+        theme = theme
     ) {
         NavHost(
             navController = navController,

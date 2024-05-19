@@ -84,19 +84,19 @@ fun FABChangeLightDarkTheme(
 ) {
     FloatingActionButton(
         onClick = {
-            appContainer.setAppTheme(
-                if (appContainer.appTheme() == RoaForumThemes.LIGHT) {
+            appContainer.autoSwitchDarkTheme = false
+            appContainer.appTheme =
+                if (appContainer.appTheme == RoaForumThemes.LIGHT) {
                     RoaForumThemes.DARK
                 } else {
                     RoaForumThemes.LIGHT
                 }
-            )
         },
         modifier = modifier
     ) {
         Icon(
             painter = painterResource(
-                if (appContainer.appTheme() == RoaForumThemes.LIGHT) {
+                if (appContainer.appTheme == RoaForumThemes.LIGHT) {
                     Res.drawable.baseline_dark_mode_24
                 } else {
                     Res.drawable.baseline_light_mode_24
