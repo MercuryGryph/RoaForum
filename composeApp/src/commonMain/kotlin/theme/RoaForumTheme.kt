@@ -4,18 +4,15 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.lightColors
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
-
-enum class RoaForumTheme {
-    LIGHT, DARK
-}
+import data.RoaForumThemes
 
 @Composable
 fun RoaForumTheme(
-    theme: RoaForumTheme = RoaForumTheme.LIGHT,
+    theme: RoaForumThemes = RoaForumThemes.LIGHT,
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        colors = if (theme == RoaForumTheme.LIGHT) lightColors() else darkColors(),
+        colors = if (theme == RoaForumThemes.LIGHT) lightColors() else darkColors(),
         content = content
     )
 }

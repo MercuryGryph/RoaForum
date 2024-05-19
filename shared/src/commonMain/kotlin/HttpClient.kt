@@ -8,36 +8,36 @@ import io.ktor.http.headers
 
 expect fun createHttpClient(): HttpClient
 
-object HttpService {
+interface HttpService {
+    fun getHttpClient(): HttpClient
+    fun resetHttpClient()
+    fun updateHttpClientWithLogin(
+        userName: String,
+        password: String,
+        targetHost: String,
+        targetRealm: String
+    )
+    suspend fun get(
+        targetUrl: String,
+        targetHeaders: Map<String, String>? = null
+    ): HttpResponse
+}
+
+class DefaultHttpService: HttpService {
     private var httpClient: HttpClient? = null
 
-    fun getHttpClient(): HttpClient {
+    override fun getHttpClient(): HttpClient {
         if (httpClient == null) {
             httpClient = createHttpClient()
         }
         return httpClient as HttpClient
     }
 
-    fun setHttpClientWithUserLogin(userName: String, password: String, targetHost: String) {
-        httpClient = createHttpClient().config {
-            install(Auth) {
-                basic {
-                    credentials {
-                        BasicAuthCredentials(
-                            username = userName,
-                            password = password
-                        )
-                    }
-                    realm = "user"
-                    sendWithoutRequest { request ->
-                        request.url.host == targetHost
-                    }
-                }
-            }
-        }
+    override fun resetHttpClient() {
+        httpClient = createHttpClient()
     }
 
-    fun updateHttpClientWithLogin(userName: String, password: String, targetHost: String, targetRealm: String) {
+    override fun updateHttpClientWithLogin(userName: String, password: String, targetHost: String, targetRealm: String) {
         httpClient = getHttpClient().config {
             install(Auth) {
                 basic {
@@ -56,17 +56,18 @@ object HttpService {
         }
     }
 
-    suspend fun get(
+    override suspend fun get(
         targetUrl: String,
-        targetHeaders: Map<String, String> = mapOf()
+        targetHeaders: Map<String, String>?
     ): HttpResponse {
         return getHttpClient().get(targetUrl) {
             headers {
-                targetHeaders.forEach { (head, str) ->
-                    append(head, str)
+                targetHeaders?.let {
+                    targetHeaders.forEach { (head, str) ->
+                        append(head, str)
+                    }
                 }
             }
         }
     }
-
 }

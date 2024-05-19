@@ -1,6 +1,5 @@
 package ui
 
-import HttpService
 import LoadingState
 import SERVER_IP
 import SERVER_PORT
@@ -30,8 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import data.AppContainer
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
+import isPasswordLegal
+import isUserNameLegal
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -60,6 +62,7 @@ import java.net.ConnectException
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun login(
+    appContainer: AppContainer,
     modifier: Modifier = Modifier
 ) {
     var doPasswordHidden
@@ -74,9 +77,9 @@ fun login(
     var stateLoadingLogin: LoadingState
         by remember { mutableStateOf(LoadingState.Waiting) }
     var stateUserNameLegal
-        by remember { mutableStateOf(StringLegalState.Legal) }
+        by remember { mutableStateOf(StringLegalState.Unchecked) }
     var statePasswordLegal
-        by remember { mutableStateOf(StringLegalState.Legal) }
+        by remember { mutableStateOf(StringLegalState.Unchecked) }
 
     var userData
         by remember { mutableStateOf(UserData()) }
@@ -85,12 +88,15 @@ fun login(
         stateLoadingLogin = LoadingState.Loading
         runBlocking {
             try {
-                HttpService.setHttpClientWithUserLogin(
+                appContainer.httpService.resetHttpClient()
+                appContainer.httpService.updateHttpClientWithLogin(
                     userName = userName,
                     password = password,
-                    targetHost = SERVER_IP
+                    targetHost = SERVER_IP,
+                    targetRealm = "user"
                 )
-                val response = HttpService.get("http://${SERVER_IP}:${SERVER_PORT}/user")
+                val response = appContainer.httpService
+                    .get("http://${SERVER_IP}:${SERVER_PORT}/user")
                 when (response.status) {
                     HttpStatusCode.OK -> {
                         val responseText = response.bodyAsText()
@@ -139,86 +145,110 @@ fun login(
             color = MaterialTheme.typography.h5.color
         )
 
-        OutlinedTextField(
-            label = {
-                Text(
-                    stringResource(Res.string.user_name)
-                )
-            },
-            value = userName,
-            onValueChange = {
-                userName = it
-            },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(Res.drawable.baseline_person_24),
-                    contentDescription = stringResource(Res.string.user_name)
-                )
-            },
-            singleLine = true,
-            colors = when (stateUserNameLegal) {
-                StringLegalState.Legal, StringLegalState.Unchecked, StringLegalState.Empty ->
-                    TextFieldDefaults.textFieldColors()
-                else ->
-                    TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.error)
-            },
-            modifier = Modifier
-        )
-
-        OutlinedTextField(
-            label = {
-                Text(
-                    text = stringResource(Res.string.password)
-                )
-            },
-            value = passwordLiteral,
-            onValueChange = {
-                passwordLiteral = it
-            },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(Res.drawable.baseline_password_24),
-                    contentDescription = stringResource(Res.string.password)
-                )
-            },
-            trailingIcon = {
-                IconButton(
-                    onClick = {
-                        doPasswordHidden = !doPasswordHidden
-                    }
-                ) {
-                    Icon(
-                        painter = painterResource(
-                            if (doPasswordHidden) {
-                                Res.drawable.baseline_visibility_24
-                            } else {
-                                Res.drawable.baseline_visibility_off_24
-                            }
-                        ),
-                        contentDescription = stringResource(
-                            if (doPasswordHidden) {
-                                Res.string.show_password
-                            } else {
-                                Res.string.hide_password
-                            }
-                        )
+        Column(
+            horizontalAlignment = Alignment.Start
+        ) {
+            OutlinedTextField(
+                label = {
+                    Text(
+                        stringResource(Res.string.user_name)
                     )
-                }
-            },
-            singleLine =  true,
-            colors = when (statePasswordLegal) {
-                StringLegalState.Legal, StringLegalState.Unchecked, StringLegalState.Empty ->
-                    TextFieldDefaults.textFieldColors()
-                else ->
-                    TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.error)
-            },
-            visualTransformation = if (doPasswordHidden) {
-                PasswordVisualTransformation()
-            } else {
-                VisualTransformation.None
-            },
-            modifier = Modifier
-        )
+                },
+                value = userName,
+                onValueChange = {
+                    userName = it
+                    stateUserNameLegal = isUserNameLegal(userName)
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(Res.drawable.baseline_person_24),
+                        contentDescription = stringResource(Res.string.user_name)
+                    )
+                },
+                singleLine = true,
+                colors = when (stateUserNameLegal) {
+                    StringLegalState.Legal, StringLegalState.Unchecked, StringLegalState.Empty ->
+                        TextFieldDefaults.textFieldColors()
+                    else ->
+                        TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.error)
+                },
+                modifier = Modifier
+            )
+
+            Text(
+                text = stateUserNameLegal.toString(),
+                fontSize = MaterialTheme.typography.body2.fontSize,
+                modifier = Modifier
+                    .padding(8.dp, 0.dp)
+            )
+        }
+
+        Column(
+            horizontalAlignment = Alignment.Start
+        ) {
+            OutlinedTextField(
+                label = {
+                    Text(
+                        text = stringResource(Res.string.password)
+                    )
+                },
+                value = passwordLiteral,
+                onValueChange = {
+                    passwordLiteral = it
+                    statePasswordLegal = isPasswordLegal(passwordLiteral)
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(Res.drawable.baseline_password_24),
+                        contentDescription = stringResource(Res.string.password)
+                    )
+                },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            doPasswordHidden = !doPasswordHidden
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                if (doPasswordHidden) {
+                                    Res.drawable.baseline_visibility_24
+                                } else {
+                                    Res.drawable.baseline_visibility_off_24
+                                }
+                            ),
+                            contentDescription = stringResource(
+                                if (doPasswordHidden) {
+                                    Res.string.show_password
+                                } else {
+                                    Res.string.hide_password
+                                }
+                            )
+                        )
+                    }
+                },
+                singleLine =  true,
+                colors = when (statePasswordLegal) {
+                    StringLegalState.Legal, StringLegalState.Unchecked, StringLegalState.Empty ->
+                        TextFieldDefaults.textFieldColors()
+                    else ->
+                        TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.error)
+                },
+                visualTransformation = if (doPasswordHidden) {
+                    PasswordVisualTransformation()
+                } else {
+                    VisualTransformation.None
+                },
+                modifier = Modifier
+            )
+
+            Text(
+                text = statePasswordLegal.toString(),
+                fontSize = MaterialTheme.typography.body2.fontSize,
+                modifier = Modifier
+                    .padding(8.dp, 0.dp)
+            )
+        }
 
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
