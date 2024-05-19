@@ -1,6 +1,9 @@
 package ui
 
 import Greeting
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -94,16 +97,30 @@ fun FABChangeLightDarkTheme(
         },
         modifier = modifier
     ) {
-        Icon(
-            painter = painterResource(
-                if (appContainer.appTheme == RoaForumThemes.LIGHT) {
-                    Res.drawable.baseline_dark_mode_24
-                } else {
-                    Res.drawable.baseline_light_mode_24
-                }
-            ),
-            contentDescription = null
-        )
+        val isDarkTheme = when (appContainer.appTheme) {
+            RoaForumThemes.LIGHT -> false
+            RoaForumThemes.DARK -> true
+        }
+        AnimatedVisibility(
+            visible = isDarkTheme,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.baseline_light_mode_24),
+                contentDescription = null
+            )
+        }
+        AnimatedVisibility(
+            visible = !isDarkTheme,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.baseline_dark_mode_24),
+                contentDescription = null
+            )
+        }
     }
 }
 
