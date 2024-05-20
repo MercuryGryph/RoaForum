@@ -7,6 +7,12 @@ enum class RoaForumThemes {
     LIGHT, DARK
 }
 
+object AppRoutes {
+    const val WELCOME_SCREEN = "WelcomeScreen"
+    const val REGISTER_SCREEN = "RegisterScreen"
+    const val SETTINGS_SCREEN = "SettingsScreen"
+}
+
 interface AppContainer {
     val httpService: HttpService
     var syncWithDeviceTheme: Boolean

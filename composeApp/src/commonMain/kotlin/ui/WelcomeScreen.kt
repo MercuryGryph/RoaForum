@@ -1,9 +1,6 @@
 package ui
 
 import Greeting
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,12 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
@@ -32,14 +26,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import data.AppContainer
-import data.RoaForumThemes
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import data.AppRoutes
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import roaforum.composeapp.generated.resources.Res
-import roaforum.composeapp.generated.resources.baseline_dark_mode_24
-import roaforum.composeapp.generated.resources.baseline_light_mode_24
 import roaforum.composeapp.generated.resources.baseline_menu_24
 import roaforum.composeapp.generated.resources.logo_roa_256x
 import roaforum.composeapp.generated.resources.logo_roa_kawaii
@@ -57,15 +47,7 @@ fun WelcomeScreen(
 
     appContainer.enableBackHandler = scaffoldState.drawerState.isOpen
 
-    Scaffold(
-        scaffoldState = scaffoldState,
-        drawerContent = {
-            WelcomeScreenDrawerContent(
-                appContainer = appContainer,
-                scaffoldState = scaffoldState,
-                scope = scope
-            )
-        },
+    Surface(
         modifier = modifier
     ) {
         Column(
@@ -91,87 +73,20 @@ fun WelcomeScreen(
                 )
             }
         }
-
-        FloatingActionButton(
-            onClick = {
-                scope.launch {
-                    scaffoldState.drawerState.open()
-                }
-            },
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(24.dp)
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.baseline_menu_24),
-                contentDescription = null
-            )
-        }
     }
-}
 
-@Composable
-fun WelcomeScreenDrawerContent(
-    appContainer: AppContainer,
-    scaffoldState: ScaffoldState,
-    scope: CoroutineScope
-) {
-    appContainer.onBackKey = {
-        scope.launch {
-            scaffoldState.drawerState.close()
-        }
-    }
-    Button(
-        onClick = {}
-    ) {
-        Text("123")
-    }
-}
-
-@OptIn(ExperimentalResourceApi::class)
-@Composable
-fun FABChangeLightDarkTheme(
-    appContainer: AppContainer,
-    modifier: Modifier = Modifier
-        .wrapContentSize()
-        .padding(24.dp)
-) {
     FloatingActionButton(
         onClick = {
-            appContainer.syncWithDeviceTheme = false
-            appContainer.appTheme =
-                if (appContainer.appTheme == RoaForumThemes.LIGHT) {
-                    RoaForumThemes.DARK
-                } else {
-                    RoaForumThemes.LIGHT
-                }
+            navController.navigate(AppRoutes.SETTINGS_SCREEN)
         },
-        modifier = modifier
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(24.dp)
     ) {
-        val isDarkTheme = when (appContainer.appTheme) {
-            RoaForumThemes.LIGHT -> false
-            RoaForumThemes.DARK -> true
-        }
-        AnimatedVisibility(
-            visible = isDarkTheme,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.baseline_light_mode_24),
-                contentDescription = null
-            )
-        }
-        AnimatedVisibility(
-            visible = !isDarkTheme,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.baseline_dark_mode_24),
-                contentDescription = null
-            )
-        }
+        Icon(
+            painter = painterResource(Res.drawable.baseline_menu_24),
+            contentDescription = null
+        )
     }
 }
 

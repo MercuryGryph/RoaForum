@@ -8,15 +8,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import data.AppContainer
+import data.AppRoutes
 import data.RoaForumThemes
 import theme.RoaForumTheme
 import ui.RegisterScreen
+import ui.SettingsScreen
 import ui.WelcomeScreen
-
-object RouteConfig {
-    const val WELCOME_SCREEN = "WelcomeScreen"
-    const val REGISTER_SCREEN = "RegisterScreen"
-}
 
 @Composable
 fun Navigation(
@@ -40,17 +37,24 @@ fun Navigation(
     ) {
         NavHost(
             navController = navController,
-            startDestination = RouteConfig.WELCOME_SCREEN
+            startDestination = AppRoutes.WELCOME_SCREEN
         ) {
-            composable(RouteConfig.WELCOME_SCREEN) {
+            composable(AppRoutes.WELCOME_SCREEN) {
                 WelcomeScreen(
                     appContainer = appContainer,
                     navController = navController
                 )
             }
-            composable(RouteConfig.REGISTER_SCREEN) {
+            composable(AppRoutes.REGISTER_SCREEN) {
                 RegisterScreen(
-                    appContainer = appContainer
+                    appContainer = appContainer,
+                    navController = navController
+                )
+            }
+            composable(AppRoutes.SETTINGS_SCREEN) {
+                SettingsScreen(
+                    appContainer = appContainer,
+                    navController = navController
                 )
             }
         }
