@@ -1,4 +1,3 @@
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,7 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import data.AppContainer
-import data.DefaultAppContainer
 import data.RoaForumThemes
 import theme.RoaForumTheme
 import ui.RegisterScreen
@@ -25,26 +23,20 @@ fun Navigation(
     navController: NavHostController = rememberNavController(),
     appContainer: AppContainer
 ) {
-    val isDarkMode: Boolean = isSystemInDarkTheme()
 
-    var theme by remember { mutableStateOf(
-        if (isDarkMode) {
-            RoaForumThemes.DARK
-        } else {
-            RoaForumThemes.LIGHT
-        }
-    ) }
-
-//    val
-
-    appContainer.isSystemInDarkTheme = isDarkMode
+    var theme by remember { mutableStateOf(RoaForumThemes.DARK) }
+    var syncWithDeviceTheme by remember { mutableStateOf(false) }
 
     appContainer.onChangeAppTheme = {
         theme = it
     }
+    appContainer.onChangeSyncWithDeviceTheme = {
+        syncWithDeviceTheme = it
+    }
 
     RoaForumTheme(
-        theme = theme
+        theme = theme,
+        syncWithSystemTheme = syncWithDeviceTheme
     ) {
         NavHost(
             navController = navController,
@@ -52,7 +44,8 @@ fun Navigation(
         ) {
             composable(RouteConfig.WELCOME_SCREEN) {
                 WelcomeScreen(
-                    appContainer = appContainer
+                    appContainer = appContainer,
+                    navController = navController
                 )
             }
             composable(RouteConfig.REGISTER_SCREEN) {

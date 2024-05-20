@@ -19,4 +19,10 @@
     <string name="error_response_null">回复消息为空</string>
 
     <string name="welcome_user">欢迎，{{userName}}。</string>
+
+    <string name="setting">设置</string>
+    <string name="theme">主题</string>
+    <string name="theme_sync_with_device">与系统同步</string>
+    <string name="theme_light">明亮</string>
+    <string name="theme_dark">黑暗</string>
 </resources>

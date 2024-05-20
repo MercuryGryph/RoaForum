@@ -11,15 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Button
 import androidx.compose.material.Card
-import androidx.compose.material.DrawerState
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Surface
@@ -34,11 +30,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import data.AppContainer
 import data.RoaForumThemes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import roaforum.composeapp.generated.resources.Res
@@ -52,6 +48,7 @@ import roaforum.composeapp.generated.resources.logo_roa_kawaii
 @Composable
 fun WelcomeScreen(
     appContainer: AppContainer,
+    navController: NavHostController,
     modifier: Modifier = Modifier
         .fillMaxSize()
 ) {
@@ -141,7 +138,7 @@ fun FABChangeLightDarkTheme(
 ) {
     FloatingActionButton(
         onClick = {
-            appContainer.autoSwitchDarkTheme = false
+            appContainer.syncWithDeviceTheme = false
             appContainer.appTheme =
                 if (appContainer.appTheme == RoaForumThemes.LIGHT) {
                     RoaForumThemes.DARK

@@ -8,9 +8,9 @@ enum class RoaForumThemes {
 }
 
 interface AppContainer {
-    var isSystemInDarkTheme: Boolean
-    var autoSwitchDarkTheme: Boolean
     val httpService: HttpService
+    var syncWithDeviceTheme: Boolean
+    var onChangeSyncWithDeviceTheme: (syncWithDeviceTheme: Boolean) -> Unit
     var appTheme: RoaForumThemes
     var onChangeAppTheme: (theme: RoaForumThemes) -> Unit
     var enableBackHandler: Boolean
@@ -20,6 +20,8 @@ interface AppContainer {
 
 class DefaultAppContainer : AppContainer {
     override val httpService: HttpService = DefaultHttpService()
+
+    override var onChangeSyncWithDeviceTheme: (syncWithDeviceTheme: Boolean) -> Unit = {}
     override var onChangeAppTheme: (RoaForumThemes) -> Unit = {}
     override var onChangeEnableBackHandler: (enableBackHandler: Boolean) -> Unit = {}
     override var onBackKey: () -> Unit = {}
@@ -32,33 +34,17 @@ class DefaultAppContainer : AppContainer {
             onChangeEnableBackHandler(value)
         }
 
-    private var _autoSwitchDarkTheme: Boolean = true
-    override var autoSwitchDarkTheme: Boolean
-        get() {return _autoSwitchDarkTheme}
+    private var _syncWithDeviceTheme: Boolean = true
+    override var syncWithDeviceTheme: Boolean
+        get() {return _syncWithDeviceTheme}
         set(value) {
-            _autoSwitchDarkTheme = value
-            if (value) {
-                isSystemInDarkTheme = _isSystemInDarkTheme
-            }
-        }
-
-    private var _isSystemInDarkTheme: Boolean = false
-    override var isSystemInDarkTheme: Boolean
-        get() {return _isSystemInDarkTheme}
-        set(value) {
-            _isSystemInDarkTheme = value
-            if (_autoSwitchDarkTheme) {
-                appTheme =
-                    if (value) RoaForumThemes.DARK
-                    else RoaForumThemes.LIGHT
-            }
+            _syncWithDeviceTheme = value
+            onChangeSyncWithDeviceTheme(value)
         }
 
     private var _appTheme: RoaForumThemes = RoaForumThemes.LIGHT
     override var appTheme: RoaForumThemes
-        get() {
-            return _appTheme
-        }
+        get() {return _appTheme}
         set(value) {
             _appTheme = value
             onChangeAppTheme(value)
