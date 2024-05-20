@@ -11,37 +11,64 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.DrawerState
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import data.AppContainer
 import data.RoaForumThemes
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import roaforum.composeapp.generated.resources.Res
 import roaforum.composeapp.generated.resources.baseline_dark_mode_24
 import roaforum.composeapp.generated.resources.baseline_light_mode_24
+import roaforum.composeapp.generated.resources.baseline_menu_24
 import roaforum.composeapp.generated.resources.logo_roa_256x
 import roaforum.composeapp.generated.resources.logo_roa_kawaii
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun WelcomeScreen(
     appContainer: AppContainer,
     modifier: Modifier = Modifier
         .fillMaxSize()
 ) {
-    Surface(
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
+
+    appContainer.enableBackHandler = scaffoldState.drawerState.isOpen
+
+    Scaffold(
+        scaffoldState = scaffoldState,
+        drawerContent = {
+            WelcomeScreenDrawerContent(
+                appContainer = appContainer,
+                scaffoldState = scaffoldState,
+                scope = scope
+            )
+        },
         modifier = modifier
     ) {
         Column(
@@ -67,14 +94,41 @@ fun WelcomeScreen(
                 )
             }
         }
-    }
 
-    FABChangeLightDarkTheme(
-        appContainer = appContainer,
-        modifier = Modifier
-            .wrapContentSize()
-            .padding(24.dp)
-    )
+        FloatingActionButton(
+            onClick = {
+                scope.launch {
+                    scaffoldState.drawerState.open()
+                }
+            },
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(24.dp)
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.baseline_menu_24),
+                contentDescription = null
+            )
+        }
+    }
+}
+
+@Composable
+fun WelcomeScreenDrawerContent(
+    appContainer: AppContainer,
+    scaffoldState: ScaffoldState,
+    scope: CoroutineScope
+) {
+    appContainer.onBackKey = {
+        scope.launch {
+            scaffoldState.drawerState.close()
+        }
+    }
+    Button(
+        onClick = {}
+    ) {
+        Text("123")
+    }
 }
 
 @OptIn(ExperimentalResourceApi::class)

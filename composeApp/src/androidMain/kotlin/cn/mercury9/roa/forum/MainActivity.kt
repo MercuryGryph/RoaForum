@@ -5,11 +5,15 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import data.DefaultAppContainer
 
 class MainActivity : ComponentActivity() {
 
@@ -23,7 +27,21 @@ class MainActivity : ComponentActivity() {
         requestPermissions()
 
         setContent {
-            App()
+            val appContainer by remember { mutableStateOf(DefaultAppContainer()) }
+
+            App(
+                appContainer = appContainer
+            )
+
+            var enableBackHandler by remember { mutableStateOf(false) }
+            appContainer.onChangeEnableBackHandler = {
+                enableBackHandler = it
+            }
+            BackHandler(
+                enabled = enableBackHandler
+            ) {
+                appContainer.onBackKey()
+            }
         }
     }
 
@@ -31,7 +49,10 @@ class MainActivity : ComponentActivity() {
         val requestList: MutableList<String> = mutableListOf()
 
         for (permission in permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
+            if (
+                ContextCompat.checkSelfPermission(this, permission)
+                    == PackageManager.PERMISSION_DENIED
+            ) {
                 requestList.add(permission)
             }
         }
@@ -42,10 +63,4 @@ class MainActivity : ComponentActivity() {
             this, requestList.toTypedArray(), 1
         )
     }
-}
-
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    App()
 }

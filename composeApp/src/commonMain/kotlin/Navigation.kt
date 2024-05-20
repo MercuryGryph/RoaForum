@@ -12,15 +12,18 @@ import data.AppContainer
 import data.DefaultAppContainer
 import data.RoaForumThemes
 import theme.RoaForumTheme
+import ui.RegisterScreen
 import ui.WelcomeScreen
 
 object RouteConfig {
     const val WELCOME_SCREEN = "WelcomeScreen"
+    const val REGISTER_SCREEN = "RegisterScreen"
 }
 
 @Composable
 fun Navigation(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    appContainer: AppContainer
 ) {
     val isDarkMode: Boolean = isSystemInDarkTheme()
 
@@ -32,9 +35,7 @@ fun Navigation(
         }
     ) }
 
-    val appContainer: AppContainer by remember { mutableStateOf(
-        DefaultAppContainer()
-    ) }
+//    val
 
     appContainer.isSystemInDarkTheme = isDarkMode
 
@@ -51,6 +52,11 @@ fun Navigation(
         ) {
             composable(RouteConfig.WELCOME_SCREEN) {
                 WelcomeScreen(
+                    appContainer = appContainer
+                )
+            }
+            composable(RouteConfig.REGISTER_SCREEN) {
+                RegisterScreen(
                     appContainer = appContainer
                 )
             }

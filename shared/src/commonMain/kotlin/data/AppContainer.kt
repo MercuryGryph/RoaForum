@@ -13,11 +13,24 @@ interface AppContainer {
     val httpService: HttpService
     var appTheme: RoaForumThemes
     var onChangeAppTheme: (theme: RoaForumThemes) -> Unit
+    var enableBackHandler: Boolean
+    var onChangeEnableBackHandler: (enableBackHandler: Boolean) -> Unit
+    var onBackKey: () -> Unit
 }
 
-class DefaultAppContainer() : AppContainer {
+class DefaultAppContainer : AppContainer {
     override val httpService: HttpService = DefaultHttpService()
     override var onChangeAppTheme: (RoaForumThemes) -> Unit = {}
+    override var onChangeEnableBackHandler: (enableBackHandler: Boolean) -> Unit = {}
+    override var onBackKey: () -> Unit = {}
+
+    private var _enableBackHandler: Boolean = false
+    override var enableBackHandler: Boolean
+        get() {return _enableBackHandler}
+        set(value) {
+            _enableBackHandler = value
+            onChangeEnableBackHandler(value)
+        }
 
     private var _autoSwitchDarkTheme: Boolean = true
     override var autoSwitchDarkTheme: Boolean
