@@ -1,11 +1,7 @@
 package ui
 
-import LoadingState
 import SERVER_IP
 import SERVER_PORT
-import State
-import StringLegalState
-import UserData
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,11 +25,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import data.AppContainer
+import data.AppRoutes
+import data.LoadingState
+import data.State
+import data.StringLegalState
+import data.UserData
+import data.isPasswordLegal
+import data.isUserNameLegal
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
-import isPasswordLegal
-import isUserNameLegal
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -52,17 +54,24 @@ import roaforum.composeapp.generated.resources.login
 import roaforum.composeapp.generated.resources.login_failed
 import roaforum.composeapp.generated.resources.login_success
 import roaforum.composeapp.generated.resources.password
+import roaforum.composeapp.generated.resources.password_char_request
+import roaforum.composeapp.generated.resources.password_length_request
+import roaforum.composeapp.generated.resources.password_not_empty_request
 import roaforum.composeapp.generated.resources.register
 import roaforum.composeapp.generated.resources.show_password
 import roaforum.composeapp.generated.resources.user_name
+import roaforum.composeapp.generated.resources.username_char_request
+import roaforum.composeapp.generated.resources.username_length_request
+import roaforum.composeapp.generated.resources.username_not_empty_request
 import roaforum.composeapp.generated.resources.welcome_user
 import sha256
 import java.net.ConnectException
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun login(
+fun Login(
     appContainer: AppContainer,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     var doPasswordHidden
@@ -140,9 +149,8 @@ fun login(
         Text(
             text = stringResource(Res.string.login),
             fontSize = MaterialTheme.typography.h5.fontSize,
-            fontStyle = MaterialTheme.typography.h5.fontStyle,
-            fontWeight = MaterialTheme.typography.h5.fontWeight,
-            color = MaterialTheme.typography.h5.color
+            lineHeight = MaterialTheme.typography.h5.lineHeight,
+            fontWeight = MaterialTheme.typography.h5.fontWeight
         )
 
         Column(
@@ -168,18 +176,34 @@ fun login(
                 singleLine = true,
                 colors = when (stateUserNameLegal) {
                     StringLegalState.Legal, StringLegalState.Unchecked, StringLegalState.Empty ->
-                        TextFieldDefaults.textFieldColors()
+                        TextFieldDefaults.outlinedTextFieldColors()
                     else ->
-                        TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.error)
+                        TextFieldDefaults.outlinedTextFieldColors(textColor = MaterialTheme.colors.error)
+                },
+                isError = when (stateUserNameLegal) {
+                    StringLegalState.Legal, StringLegalState.Unchecked, StringLegalState.Empty ->
+                        false
+                    else ->
+                        true
                 },
                 modifier = Modifier
             )
 
             Text(
-                text = stateUserNameLegal.toString(),
-                fontSize = MaterialTheme.typography.body2.fontSize,
+                text = when (stateUserNameLegal) {
+                    StringLegalState.Legal, StringLegalState.Unchecked ->
+                        ""
+                    StringLegalState.Empty ->
+                        stringResource(Res.string.username_not_empty_request)
+                    StringLegalState.TooLong, StringLegalState.TooShort, StringLegalState.WrongLength ->
+                        stringResource(Res.string.username_length_request)
+                    else ->
+                        stringResource(Res.string.username_char_request)
+                },
+                fontSize = MaterialTheme.typography.overline.fontSize,
+                lineHeight = MaterialTheme.typography.overline.lineHeight,
                 modifier = Modifier
-                    .padding(8.dp, 0.dp)
+                    .padding(8.dp, 1.dp)
             )
         }
 
@@ -230,9 +254,15 @@ fun login(
                 singleLine =  true,
                 colors = when (statePasswordLegal) {
                     StringLegalState.Legal, StringLegalState.Unchecked, StringLegalState.Empty ->
-                        TextFieldDefaults.textFieldColors()
+                        TextFieldDefaults.outlinedTextFieldColors()
                     else ->
-                        TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.error)
+                        TextFieldDefaults.outlinedTextFieldColors(textColor = MaterialTheme.colors.error)
+                },
+                isError = when (statePasswordLegal) {
+                    StringLegalState.Legal, StringLegalState.Unchecked, StringLegalState.Empty ->
+                        false
+                    else ->
+                        true
                 },
                 visualTransformation = if (doPasswordHidden) {
                     PasswordVisualTransformation()
@@ -243,10 +273,20 @@ fun login(
             )
 
             Text(
-                text = statePasswordLegal.toString(),
-                fontSize = MaterialTheme.typography.body2.fontSize,
+                text = when (statePasswordLegal) {
+                    StringLegalState.Legal, StringLegalState.Unchecked ->
+                        ""
+                    StringLegalState.Empty ->
+                        stringResource(Res.string.password_not_empty_request)
+                    StringLegalState.TooLong, StringLegalState.TooShort, StringLegalState.WrongLength ->
+                        stringResource(Res.string.password_length_request)
+                    else ->
+                        stringResource(Res.string.password_char_request)
+                },
+                fontSize = MaterialTheme.typography.overline.fontSize,
+                lineHeight = MaterialTheme.typography.overline.lineHeight,
                 modifier = Modifier
-                    .padding(8.dp, 0.dp)
+                    .padding(8.dp, 1.dp)
             )
         }
 
@@ -259,7 +299,7 @@ fun login(
         ) {
             Button(
                 onClick = {
-                    TODO()
+                    navController.navigate(AppRoutes.REGISTER_SCREEN)
                 },
                 enabled = stateLoadingLogin == LoadingState.Waiting,
                 modifier = Modifier

@@ -3,15 +3,39 @@
     <string name="app_name">ROA 论坛</string>
 
     <string name="click_me">点击我！</string>
+    <string name="confirm">确认</string>
+    <string name="cancel">取消</string>
+
     <string name="user_name">用户名</string>
+    <string name="nickname">昵称</string>
     <string name="password">密码</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="minecraft_id">Minecraft Java Edition 正版 ID</string>
+    <string name="minecraft_uuid">Minecraft Java Edition UUID</string>
+
     <string name="login">登录</string>
+
     <string name="show_password">显示密码</string>
     <string name="hide_password">隐藏密码</string>
+
     <string name="login_success">登录成功</string>
     <string name="login_failed">登录失败</string>
 
     <string name="register">注册</string>
+
+    <string name="username_char_request">用户名只能包含字母、数字、下划线，以字母开头</string>
+    <string name="username_length_request">用户名长度必须在4到20（包含）</string>
+    <string name="username_not_empty_request">用户名不能为空</string>
+
+    <string name="password_char_request">密码只能包含字母、数字、下划线</string>
+    <string name="password_length_request">密码长度必须在6到20（包含）</string>
+    <string name="password_not_empty_request">密码不能为空</string>
+    <string name="confirm_password_not_same">确认密码与密码不同</string>
+
+    <string name="nickname_char_request">昵称不能包含除“_”、“-”之外的特殊字符</string>
+    <string name="nickname_length_shortest_request">昵称至少需要4个字符</string>
+    <string name="nickname_length_longest_request">昵称长度不能超过32</string>
+    <string name="nickname_not_empty_request">昵称不能为空</string>
 
     <string name="error">错误</string>
     <string name="error_unknown">未知错误</string>

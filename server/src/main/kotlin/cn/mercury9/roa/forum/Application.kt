@@ -3,22 +3,17 @@ package cn.mercury9.roa.forum
 import Greeting
 import SERVER_IP
 import SERVER_PORT
-import UserData
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.UserIdPrincipal
-import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.basic
-import io.ktor.server.auth.principal
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import sha256
 
 fun main() {

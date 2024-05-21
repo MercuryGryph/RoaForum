@@ -58,8 +58,9 @@ fun WelcomeScreen(
                 modifier = Modifier
                     .wrapContentSize()
             ) {
-                login(
+                Login(
                     appContainer = appContainer,
+                    navController = navController,
                     modifier = Modifier
                         .wrapContentSize()
                         .padding(8.dp, 16.dp)

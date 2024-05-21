@@ -1,3 +1,5 @@
+package data
+
 sealed interface State {
     data object Succeed: State
     data class Failed(val message: String?): State

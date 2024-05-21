@@ -1,15 +1,15 @@
 package cn.mercury9.roa.forum
 
-import UserData
+import data.UserData
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.principal
 import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import io.ktor.server.routing.get
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

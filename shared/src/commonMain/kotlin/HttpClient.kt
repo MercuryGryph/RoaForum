@@ -2,9 +2,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
 import io.ktor.client.plugins.auth.providers.basic
+import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.headers
+import io.ktor.http.parameters
 
 expect fun createHttpClient(): HttpClient
 
@@ -20,6 +22,12 @@ interface HttpService {
     suspend fun get(
         targetUrl: String,
         targetHeaders: Map<String, String>? = null
+    ): HttpResponse
+
+    suspend fun submitForm(
+        targetUrl: String,
+        targetHeaders: Map<String, String>? = null,
+        targetFormParameters: Map<String, String>
     ): HttpResponse
 }
 
@@ -70,4 +78,28 @@ class DefaultHttpService: HttpService {
             }
         }
     }
+
+    override suspend fun submitForm(
+        targetUrl: String,
+        targetHeaders: Map<String, String>?,
+        targetFormParameters: Map<String, String>
+    ): HttpResponse {
+        return getHttpClient().submitForm(
+            url = targetUrl,
+            formParameters = parameters {
+                targetFormParameters.forEach { (key, value) ->
+                    append(key, value)
+                }
+            }
+        ) {
+            headers {
+                targetHeaders?.let {
+                    targetHeaders.forEach { (head, str) ->
+                        append(head, str)
+                    }
+                }
+            }
+        }
+    }
+
 }

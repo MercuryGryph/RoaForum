@@ -2,15 +2,39 @@
     <string name="app_name">ROA Forum</string>
 
     <string name="click_me">Click Me!</string>
-    <string name="user_name">User Name</string>
-    <string name="password">password</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="user_name">Username</string>
+    <string name="nickname">Nickname</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="minecraft_id">Minecraft Java Edition ID</string>
+    <string name="minecraft_uuid">Minecraft Java Edition UUID</string>
+
     <string name="login">Login</string>
+
     <string name="show_password">Show password</string>
     <string name="hide_password">Hide password</string>
+
     <string name="login_success">Login success</string>
     <string name="login_failed">Login failed</string>
 
     <string name="register">Register</string>
+
+    <string name="username_char_request">Username can only use letters, numbers and underlines, start with letter.</string>
+    <string name="username_length_request">Username must has length between 4 and 20. (contain)</string>
+    <string name="username_not_empty_request">Username cannot be empty</string>
+
+    <string name="password_char_request">Password can only use letters, numbers and underlines.</string>
+    <string name="password_length_request">Password must has length between 6 and 20. (contain)</string>
+    <string name="password_not_empty_request">Password cannot be empty</string>
+    <string name="confirm_password_not_same">Confirm password is not same with password</string>
+
+    <string name="nickname_char_request">Nickname cannot contain special characters expect '_', '-'</string>
+    <string name="nickname_length_shortest_request">Nickname at least has 4 characters</string>
+    <string name="nickname_length_longest_request">Nickname cannot longer then 32</string>
+    <string name="nickname_not_empty_request">Nickname cannot be empty</string>
 
     <string name="error">Error</string>
     <string name="error_unknown">Unknown Error</string>
