@@ -1,3 +1,4 @@
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,8 +23,15 @@ fun Navigation(
 ) {
 
     var theme by remember { mutableStateOf(RoaForumThemes.DARK) }
-    var syncWithDeviceTheme by remember { mutableStateOf(false) }
-
+    var syncWithDeviceTheme by remember { mutableStateOf(appContainer.syncWithDeviceTheme) }
+    if (syncWithDeviceTheme) {
+        appContainer.appTheme =
+            if (isSystemInDarkTheme()) {
+                RoaForumThemes.DARK
+            } else {
+                RoaForumThemes.LIGHT
+            }
+    }
     appContainer.onChangeAppTheme = {
         theme = it
     }

@@ -23,6 +23,7 @@
     <string name="setting">设置</string>
     <string name="theme">主题</string>
     <string name="theme_sync_with_device">与系统同步</string>
+    <string name="theme_select_one">选择主题</string>
     <string name="theme_light">明亮</string>
     <string name="theme_dark">黑暗</string>
 </resources>
