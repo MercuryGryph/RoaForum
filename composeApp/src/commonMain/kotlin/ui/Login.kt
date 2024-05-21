@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
@@ -303,6 +304,7 @@ fun Login(
                 },
                 enabled = stateLoadingLogin == LoadingState.Waiting,
                 modifier = Modifier
+                    .widthIn(min = 150.dp)
                     .padding(16.dp, 0.dp)
             ) {
                 Text(stringResource(Res.string.register))
@@ -319,6 +321,7 @@ fun Login(
                     && statePasswordLegal == StringLegalState.Legal
                 ),
                 modifier = Modifier
+                    .widthIn(min = 150.dp)
                     .padding(16.dp, 0.dp)
             ) {
                 Text(

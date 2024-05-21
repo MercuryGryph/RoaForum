@@ -64,12 +64,12 @@ fun SettingsScreen(
             verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .fillMaxSize()
+                .padding(24.dp, 16.dp)
         ) {
             SettingTheme(
                 appContainer = appContainer,
                 modifier = Modifier
                     .widthIn(300.dp, 600.dp)
-                    .padding(vertical = 50.dp)
             )
         }
     }

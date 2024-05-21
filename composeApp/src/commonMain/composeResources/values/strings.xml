@@ -9,8 +9,8 @@
     <string name="nickname">Nickname</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="minecraft_id">Minecraft Java Edition ID</string>
-    <string name="minecraft_uuid">Minecraft Java Edition UUID</string>
+    <string name="minecraft_id">Minecraft Java ID</string>
+    <string name="minecraft_uuid">Minecraft Java UUID</string>
 
     <string name="login">Login</string>
 

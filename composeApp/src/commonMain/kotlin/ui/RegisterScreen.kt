@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Button
 import androidx.compose.material.Card
@@ -389,9 +390,9 @@ fun Register(
                 singleLine = true,
                 colors = when (stateNicknameLegal) {
                     StringLegalState.Legal, StringLegalState.Unchecked, StringLegalState.Empty ->
-                        TextFieldDefaults.textFieldColors()
+                        TextFieldDefaults.outlinedTextFieldColors()
                     else ->
-                        TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.error)
+                        TextFieldDefaults.outlinedTextFieldColors(textColor = MaterialTheme.colors.error)
                 },
                 isError = when (stateNicknameLegal) {
                     StringLegalState.Legal, StringLegalState.Unchecked, StringLegalState.Empty ->
@@ -500,6 +501,7 @@ fun Register(
                     navController.navigateUp()
                 },
                 modifier = Modifier
+                    .widthIn(min = 150.dp)
                     .padding(16.dp, 0.dp)
             ) {
                 Text(
@@ -511,6 +513,7 @@ fun Register(
                     registry()
                 },
                 modifier = Modifier
+                    .widthIn(min = 150.dp)
                     .padding(16.dp, 0.dp)
             ) {
                 Text(
