@@ -4,12 +4,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserData(
+    val id: Int = -1,
+
     val userName: String? = null,
     val nickname: String? = null,
     val minecraftId: String? = null,
+
     val minecraftUuid: String? = null,
     val gender: String? = null,
     val birthday: String? = null,
+
     val contacts: List<Contact>? = null
 )
 

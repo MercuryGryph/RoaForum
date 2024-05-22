@@ -18,6 +18,10 @@ ktor = "3.0.0-beta-1"
 logback = "1.5.6"
 kotlinxSerializationJson = "1.6.3"
 navigationComposeVersion = "2.8.0-alpha02"
+exposedCore = "0.50.1"
+exposedDao = "0.50.1"
+exposedJdbc = "0.50.1"
+h2 = "2.2.224"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -45,6 +49,10 @@ ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref =
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigationComposeVersion" }
+exposed-core = { group = "org.jetbrains.exposed", name = "exposed-core", version.ref = "exposedCore" }
+exposed-dao = { group = "org.jetbrains.exposed", name = "exposed-dao", version.ref = "exposedDao" }
+exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version.ref = "exposedJdbc" }
+h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

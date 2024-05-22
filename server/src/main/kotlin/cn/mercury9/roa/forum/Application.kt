@@ -3,6 +3,7 @@ package cn.mercury9.roa.forum
 import Greeting
 import SERVER_IP
 import SERVER_PORT
+import cn.mercury9.roa.forum.database.DatabaseSingleton
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
@@ -23,6 +24,8 @@ fun main() {
 
 fun Application.module() {
 
+    DatabaseSingleton.init()
+
     install(Authentication) {
         basic(name = "userAuth") {
             realm = "user"
@@ -35,6 +38,7 @@ fun Application.module() {
             }
         }
     }
+
     install(Routing) {}
 
     routing {

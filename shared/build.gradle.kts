@@ -24,6 +24,10 @@ kotlin {
             implementation(libs.ktor.client.auth)
             implementation(libs.ktor.client.core)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.exposed.core)
+            implementation(libs.exposed.dao)
+            implementation(libs.exposed.jdbc)
+            implementation(libs.h2)
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
