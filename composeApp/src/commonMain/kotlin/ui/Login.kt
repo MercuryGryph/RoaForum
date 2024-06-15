@@ -33,8 +33,7 @@ import data.LoadingState
 import data.State
 import data.StringLegalState
 import data.UserData
-import data.isPasswordLegal
-import data.isUserNameLegal
+import data.UserDataUtils
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
@@ -166,7 +165,7 @@ fun Login(
                 value = userName,
                 onValueChange = {
                     userName = it
-                    stateUserNameLegal = isUserNameLegal(userName)
+                    stateUserNameLegal = UserDataUtils.isUserNameLegal(userName)
                 },
                 leadingIcon = {
                     Icon(
@@ -220,7 +219,7 @@ fun Login(
                 value = passwordLiteral,
                 onValueChange = {
                     passwordLiteral = it
-                    statePasswordLegal = isPasswordLegal(passwordLiteral)
+                    statePasswordLegal = UserDataUtils.isPasswordLegal(passwordLiteral)
                 },
                 leadingIcon = {
                     Icon(

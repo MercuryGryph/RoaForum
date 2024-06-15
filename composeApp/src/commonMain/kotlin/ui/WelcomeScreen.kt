@@ -93,7 +93,7 @@ fun welcome(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier,
     ) {
-        val logoType by remember { mutableStateOf((0..10).random()) }
+        val logoType by remember { mutableStateOf((1..10).random()) }
         val greeting = remember { Greeting().greet() }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -106,7 +106,7 @@ fun welcome(
             ) {
                 Image(
                     painter =  painterResource(
-                        if (logoType == 0) {
+                        if (logoType == 1) {
                             Res.drawable.logo_roa_kawaii
                         } else {
                             Res.drawable.logo_roa_256x

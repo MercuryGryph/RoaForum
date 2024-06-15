@@ -29,9 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import data.AppContainer
 import data.StringLegalState
-import data.isNicknameLegal
-import data.isPasswordLegal
-import data.isUserNameLegal
+import data.UserDataUtils
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -132,8 +130,6 @@ fun Register(
             by remember { mutableStateOf(StringLegalState.Unchecked) }
     var stateMinecraftIdLegal
             by remember { mutableStateOf(false) }
-    var stateMinecraftUuidLegal
-            by remember { mutableStateOf(false) }
 
     fun registry() {
         TODO()
@@ -164,7 +160,7 @@ fun Register(
                 value = userName,
                 onValueChange = {
                     userName = it
-                    stateUserNameLegal = isUserNameLegal(userName)
+                    stateUserNameLegal = UserDataUtils.isUserNameLegal(userName)
                 },
                 leadingIcon = {
                     Icon(
@@ -219,7 +215,7 @@ fun Register(
                 value = passwordLiteral,
                 onValueChange = {
                     passwordLiteral = it
-                    statePasswordLegal = isPasswordLegal(passwordLiteral)
+                    statePasswordLegal = UserDataUtils.isPasswordLegal(passwordLiteral)
                     if (confirmPasswordLiteral.isNotEmpty()) {
                         stateIsConfirmPasswordSame = it == confirmPasswordLiteral
                     }
@@ -379,7 +375,7 @@ fun Register(
                 value = nickname,
                 onValueChange = {
                     nickname = it
-                    stateNicknameLegal = isNicknameLegal(nickname)
+                    stateNicknameLegal = UserDataUtils.isNicknameLegal(nickname)
                 },
                 leadingIcon = {
                     Icon(

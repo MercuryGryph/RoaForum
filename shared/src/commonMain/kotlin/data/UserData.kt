@@ -24,38 +24,40 @@ data class Contact(
     val isPublic: Boolean
 )
 
-fun isUserNameLegal(userName: String): StringLegalState {
-    if (userName.isEmpty()) return StringLegalState.Empty
-    if (userName.length !in 4..20) return StringLegalState.WrongLength
+object UserDataUtils {
+    fun isUserNameLegal(userName: String): StringLegalState {
+        if (userName.isEmpty()) return StringLegalState.Empty
+        if (userName.length !in 4..20) return StringLegalState.WrongLength
 
-    if (Regex("""^[a-zA-Z]\w+$""").matches(userName)) {
-        return StringLegalState.Legal
-    }
-    return StringLegalState.HasIllegalChar
-}
-
-fun isPasswordLegal(password: String): StringLegalState {
-    if (password.isEmpty()) return StringLegalState.Empty
-    if (password.length !in 6..20) return StringLegalState.WrongLength
-
-    if (Regex("""^\w+$""").matches(password)) {
-        return StringLegalState.Legal
-    }
-    return StringLegalState.HasIllegalChar
-}
-
-fun isNicknameLegal(nickName: String): StringLegalState {
-    if (nickName.isEmpty()) return StringLegalState.Empty
-    if (nickName.length < 4) return StringLegalState.TooShort
-    if (nickName.length > 32) return StringLegalState.TooLong
-
-    if (nickName.contains(
-            """[`~!@#$%^&*()+=<>?:"{}|,./;'\\\[\]·！￥…（）—《》？：“”【】、；‘，。＠＃％＆＊]"""
-            .toRegex()) ||
-        !"""\S|( )""".toRegex().matches(nickName)
-    ) {
+        if (Regex("""^[a-zA-Z]\w+$""").matches(userName)) {
+            return StringLegalState.Legal
+        }
         return StringLegalState.HasIllegalChar
     }
 
-    return StringLegalState.Legal
+    fun isPasswordLegal(password: String): StringLegalState {
+        if (password.isEmpty()) return StringLegalState.Empty
+        if (password.length !in 6..20) return StringLegalState.WrongLength
+
+        if (Regex("""^\w+$""").matches(password)) {
+            return StringLegalState.Legal
+        }
+        return StringLegalState.HasIllegalChar
+    }
+
+    fun isNicknameLegal(nickName: String): StringLegalState {
+        if (nickName.isEmpty()) return StringLegalState.Empty
+        if (nickName.length < 4) return StringLegalState.TooShort
+        if (nickName.length > 32) return StringLegalState.TooLong
+
+        if (nickName.contains(
+                """[`~!@#$%^&*()+=<>?:"{}|,./;'\\\[\]·！￥…（）—《》？：“”【】、；‘，。＠＃％＆＊]"""
+                    .toRegex()) ||
+            !"""\S|( )""".toRegex().matches(nickName)
+        ) {
+            return StringLegalState.HasIllegalChar
+        }
+
+        return StringLegalState.Legal
+    }
 }
